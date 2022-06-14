@@ -30,14 +30,14 @@ jobs:
       - name: Lint check
         run: npm run lint:check
 
-      - name: Spell check
-        run: npm run spell:check
+#      - name: Spell check
+#        run: npm run spell:check
 
-      - name: Test
-        run: npm run test
-
-      - name: Setup test
-        run: npm run test:setup
+#      - name: Test
+#        run: npm run test
+#
+#      - name: Setup test
+#        run: npm run test:setup
 
       - name: Release
         env:
