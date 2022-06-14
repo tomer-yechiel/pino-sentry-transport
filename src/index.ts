@@ -14,7 +14,7 @@ export default async function () {
       }
     },
     {
-      async close(err) {
+      async close() {
         await Sentry.flush();
       },
     }
