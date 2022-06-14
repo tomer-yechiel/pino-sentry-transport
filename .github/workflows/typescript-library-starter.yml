@@ -1,6 +1,9 @@
 name: Typescript Library Starter
 
-on: [push]
+on:
+    push:
+        branches:
+        - main
 
 env:
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
