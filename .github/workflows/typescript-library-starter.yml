@@ -1,0 +1,46 @@
+name: Typescript Library Starter
+
+on: [push]
+
+env:
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+jobs:
+  typescript-library-starter:
+    runs-on: ubuntu-latest
+
+    concurrency:
+      group: ${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: volta-cli/action@v1
+      - run: npm ci
+
+      - name: Dependencies audit
+        run: npm audit
+
+      - name: Build
+        run: npm run build
+
+      - name: Format check
+        run: npm run format:check
+
+      - name: Lint check
+        run: npm run lint:check
+
+      - name: Spell check
+        run: npm run spell:check
+
+      - name: Test
+        run: npm run test
+
+      - name: Setup test
+        run: npm run test:setup
+
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm run semantic-release

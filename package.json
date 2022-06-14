@@ -1,0 +1,78 @@
+{
+  "name": "@gjuchault/typescript-library-starter",
+  "version": "0.0.0-development",
+  "description": "Yet another typescript library starter template",
+  "keywords": [
+    "typescript",
+    "library",
+    "starter",
+    "template"
+  ],
+  "homepage": "https://github.com/gjuchault/typescript-library-starter",
+  "bugs": "https://github.com/gjuchault/typescript-library-starter/issues",
+  "author": "Gabriel Juchault <gabriel.juchault@gmail.com>",
+  "repository": "gjuchault/typescript-library-starter",
+  "main": "./build/cjs/index.js",
+  "module": "./build/esm/index.js",
+  "types": "./build/index.d.ts",
+  "license": "MIT",
+  "engines": {
+    "node": "> 14"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "setup": "node -r ./esbuild-hook ./scripts/setup",
+    "build": "npm run clean && npm run type:dts && npm run build:main",
+    "build:main": "node -r ./esbuild-hook ./scripts/build",
+    "clean": "node -r ./esbuild-hook ./scripts/clean",
+    "type:dts": "tsc --emitDeclarationOnly",
+    "type:check": "tsc --noEmit",
+    "format": "prettier \"src/**/*.ts\" --write",
+    "format:check": "prettier \"src/**/*.ts\" --check",
+    "lint": "eslint src --ext .ts --fix",
+    "lint:check": "eslint src --ext .ts",
+    "test": "ava",
+    "test:coverage": "nyc ava && nyc report --reporter=html",
+    "test:setup": "node -r ./esbuild-hook ./scripts/testSetup",
+    "spell:check": "cspell \"{README.md,CODE_OF_CONDUCT.md,CONTRIBUTING.md,.github/*.md,src/**/*.ts}\"",
+    "cz": "cz",
+    "semantic-release": "semantic-release"
+  },
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.1",
+    "@semantic-release/commit-analyzer": "^9.0.2",
+    "@semantic-release/github": "^8.0.4",
+    "@semantic-release/npm": "^9.0.1",
+    "@semantic-release/release-notes-generator": "^10.0.3",
+    "@types/node": "^17.0.42",
+    "@types/prompts": "^2.0.14",
+    "@typescript-eslint/eslint-plugin": "^5.27.1",
+    "@typescript-eslint/parser": "^5.27.1",
+    "ava": "^4.3.0",
+    "@ryansonshine/commitizen": "^4.2.8",
+    "cspell": "^6.1.2",
+    "@ryansonshine/cz-conventional-changelog": "^3.3.4",
+    "esbuild": "^0.14.43",
+    "eslint": "^8.17.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-import-resolver-typescript": "^2.7.1",
+    "eslint-plugin-eslint-comments": "^3.2.0",
+    "eslint-plugin-import": "^2.26.0",
+    "nyc": "^15.1.0",
+    "prettier": "^2.6.2",
+    "prompts": "^2.4.2",
+    "semantic-release": "^19.0.3",
+    "slugify": "^1.6.5",
+    "source-map-support": "^0.5.21",
+    "typescript": "^4.7.3"
+  },
+  "volta": {
+    "node": "16.15.1",
+    "npm": "8.11.0"
+  },
+  "overrides": {
+    "semver-regex": "3.1.4"
+  }
+}
