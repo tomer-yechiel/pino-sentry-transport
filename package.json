@@ -1,5 +1,5 @@
 {
-  "name": "@tomer.yechiel/pino-sentry-transport",
+  "name": "pino-sentry-transport",
   "version": "0.0.0-development",
   "description": "Sentry Transport for Pino",
   "keywords": [
