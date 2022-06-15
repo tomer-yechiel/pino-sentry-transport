@@ -1,22 +1,62 @@
-import Sentry from "@sentry/node";
+import { NodeOptions, SeverityLevel } from "@sentry/node";
+import * as Sentry from "@sentry/node";
 import build from "pino-abstract-transport";
 
-export default async function () {
-  Sentry.init({
-    dsn: "https://300e099cd83d4e6a8656272d2b9d54ee@o1173646.ingest.sentry.io/6505195",
-    // ...
-  });
+export const pinoLevelToSentryLevel = (level: number): SeverityLevel => {
+  if (level == 60) {
+    return 'fatal';
+  }
+  if (level >= 50) {
+    return "error";
+  }
+  if (level >= 40) {
+    return "warning";
+  }
+  if (level >= 30) {
+    return "log";
+  }
+  if (level >= 20) {
+    return "info";
+  }
+  return "debug";
+};
+
+interface PinoSentryOptions {
+  sentry?: NodeOptions;
+  minLevel?: number;
+}
+
+class ExtendedError extends Error {
+  public constructor(message: string, stack: string) {
+    super(message);
+
+    this.name = "Error";
+    this.stack = stack || null;
+  }
+}
+
+export default async function(pinoSentryOptions: PinoSentryOptions) {
+  Sentry.init(pinoSentryOptions.sentry);
 
   return build(
-    async function (source) {
+    async function(source) {
       for await (const obj of source) {
-        Sentry.captureException(obj);
+        if(!obj.err){
+
+        }
+        const stack = obj?.err?.stack;
+        const errorMessage = obj?.err?.message;
+        const level = obj.level;
+        const scope = new Sentry.Scope();
+        scope.setLevel(pinoLevelToSentryLevel(level));
+        if (level > pinoSentryOptions.minLevel) {
+          if (stack) {
+            Sentry.captureException(new ExtendedError(errorMessage, stack), scope);
+          } else {
+            Sentry.captureMessage(obj?.msg, scope);
+          }
+        }
       }
-    },
-    {
-      async close() {
-        await Sentry.flush();
-      },
     }
   );
 }
