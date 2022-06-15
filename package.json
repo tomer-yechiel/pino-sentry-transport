@@ -1,6 +1,6 @@
 {
   "name": "pino-sentry-transport",
-  "version": "0.0.0-development",
+  "version": "0.0.2",
   "description": "Sentry Transport for Pino",
   "keywords": [
     "typescript",
@@ -10,7 +10,7 @@
   "homepage": "https://github.com/tomer-yechiel/pino-sentry-transport",
   "bugs": "https://github.com/tomer-yechiel/pino-sentry-transport/issues",
   "author": "Tomer Yechiel",
-  "repository": "tomer.yechiel/pino-sentry-transport",
+  "repository": "https://github.com/tomer-yechiel/pino-sentry-transport",
   "main": "./build/cjs/index.js",
   "module": "./build/esm/index.js",
   "types": "./build/index.d.ts",
