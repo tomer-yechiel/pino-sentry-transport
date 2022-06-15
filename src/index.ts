@@ -4,7 +4,7 @@ import build from "pino-abstract-transport";
 
 export const pinoLevelToSentryLevel = (level: number): SeverityLevel => {
   if (level == 60) {
-    return 'fatal';
+    return "fatal";
   }
   if (level >= 50) {
     return "error";
@@ -35,28 +35,26 @@ class ExtendedError extends Error {
   }
 }
 
-export default async function(pinoSentryOptions: PinoSentryOptions) {
+export default async function (pinoSentryOptions: PinoSentryOptions) {
   Sentry.init(pinoSentryOptions.sentry);
 
-  return build(
-    async function(source) {
-      for await (const obj of source) {
-        if(!obj.err){
-
-        }
-        const stack = obj?.err?.stack;
-        const errorMessage = obj?.err?.message;
-        const level = obj.level;
-        const scope = new Sentry.Scope();
-        scope.setLevel(pinoLevelToSentryLevel(level));
-        if (level > pinoSentryOptions.minLevel) {
-          if (stack) {
-            Sentry.captureException(new ExtendedError(errorMessage, stack), scope);
-          } else {
-            Sentry.captureMessage(obj?.msg, scope);
-          }
+  return build(async function (source) {
+    for await (const obj of source) {
+      const stack = obj?.err?.stack;
+      const errorMessage = obj?.err?.message;
+      const level = obj.level;
+      const scope = new Sentry.Scope();
+      scope.setLevel(pinoLevelToSentryLevel(level));
+      if (level > pinoSentryOptions.minLevel) {
+        if (stack) {
+          Sentry.captureException(
+            new ExtendedError(errorMessage, stack),
+            scope
+          );
+        } else {
+          Sentry.captureMessage(obj?.msg, scope);
         }
       }
     }
-  );
+  });
 }

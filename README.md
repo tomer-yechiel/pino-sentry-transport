@@ -25,6 +25,9 @@ const logger = pino({
         // aditional options for sentry
       },
     },
+    level: "info", // which level to send to sentry
   },
 });
 ```
+if log contain error, it will send to sentry using captureException if not it will use captureMessage
+
