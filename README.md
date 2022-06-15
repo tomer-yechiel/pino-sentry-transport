@@ -29,5 +29,5 @@ const logger = pino({
   },
 });
 ```
-if log contain error, it will send to sentry using captureException if not it will use captureMessage
+if log contain error, it will send to sentry using captureException if not it will use captureMessage.
 
