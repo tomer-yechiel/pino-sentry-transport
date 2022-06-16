@@ -48,7 +48,7 @@
     "@semantic-release/npm": "^9.0.1",
     "@semantic-release/release-notes-generator": "^10.0.3",
     "@sentry/types": "^7.1.1",
-    "@types/node": "^17.0.42",
+    "@types/node": "^18.0.0",
     "@types/prompts": "^2.0.14",
     "@typescript-eslint/eslint-plugin": "^5.27.1",
     "@typescript-eslint/parser": "^5.27.1",
