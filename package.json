@@ -81,6 +81,6 @@
     "semver-regex": "3.1.4"
   },
   "dependencies": {
-    "pino-abstract-transport": "^0.5.0"
+    "pino-abstract-transport": "^1.0.0"
   }
 }
