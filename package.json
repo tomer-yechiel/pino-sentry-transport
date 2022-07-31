@@ -1,6 +1,6 @@
 {
   "name": "pino-sentry-transport",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Sentry Transport for Pino",
   "keywords": [
     "typescript",

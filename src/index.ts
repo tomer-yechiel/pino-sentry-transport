@@ -40,10 +40,17 @@ export default async function (pinoSentryOptions: PinoSentryOptions) {
 
   return build(async function (source) {
     for await (const obj of source) {
+      if(!obj) {
+        return;
+      }
       const stack = obj?.err?.stack;
       const errorMessage = obj?.err?.message;
       const level = obj.level;
       const scope = new Sentry.Scope();
+      const extra = obj?.extra;
+      if(extra){
+        scope.setExtras(obj?.extra);
+      }
       scope.setLevel(pinoLevelToSentryLevel(level));
       if (level > pinoSentryOptions.minLevel) {
         if (stack) {
