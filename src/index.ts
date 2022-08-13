@@ -1,65 +1,46 @@
-import { NodeOptions, SeverityLevel } from "@sentry/node";
-import * as Sentry from "@sentry/node";
+import {
+  captureException,
+  captureMessage,
+  init,
+  NodeOptions,
+} from "@sentry/node";
+import { Scope } from "@sentry/types/types/scope";
 import build from "pino-abstract-transport";
-
-export const pinoLevelToSentryLevel = (level: number): SeverityLevel => {
-  if (level == 60) {
-    return "fatal";
-  }
-  if (level >= 50) {
-    return "error";
-  }
-  if (level >= 40) {
-    return "warning";
-  }
-  if (level >= 30) {
-    return "log";
-  }
-  if (level >= 20) {
-    return "info";
-  }
-  return "debug";
-};
+import { deserializePinoError, pinoLevelToSentryLevel } from "./utils";
 
 interface PinoSentryOptions {
   sentry?: NodeOptions;
   minLevel?: number;
-}
-
-class ExtendedError extends Error {
-  public constructor(message: string, stack: string) {
-    super(message);
-
-    this.name = "Error";
-    this.stack = stack || null;
-  }
+  withLogRecord?: boolean;
 }
 
 export default async function (pinoSentryOptions: PinoSentryOptions) {
-  Sentry.init(pinoSentryOptions.sentry);
+  init(pinoSentryOptions.sentry);
+
+  function enrichScope(scope: Scope, pinoEvent) {
+    scope.setLevel(pinoLevelToSentryLevel(pinoEvent.level));
+    if (pinoSentryOptions.withLogRecord) {
+      scope.setContext("pino", pinoEvent);
+    }
+    return scope;
+  }
 
   return build(async function (source) {
     for await (const obj of source) {
-      if(!obj) {
+      if (!obj) {
         return;
       }
-      const stack = obj?.err?.stack;
-      const errorMessage = obj?.err?.message;
+
+      const serializedError = obj?.err;
       const level = obj.level;
-      const scope = new Sentry.Scope();
-      const extra = obj?.extra;
-      if(extra){
-        scope.setExtras(obj?.extra);
-      }
-      scope.setLevel(pinoLevelToSentryLevel(level));
+
       if (level > pinoSentryOptions.minLevel) {
-        if (stack) {
-          Sentry.captureException(
-            new ExtendedError(errorMessage, stack),
-            scope
+        if (serializedError) {
+          captureException(deserializePinoError(serializedError), (scope) =>
+            enrichScope(scope, obj)
           );
         } else {
-          Sentry.captureMessage(obj?.msg, scope);
+          captureMessage(obj?.msg, (scope) => enrichScope(scope, obj));
         }
       }
     }
