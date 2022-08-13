@@ -44,30 +44,33 @@
     "@ryansonshine/cz-conventional-changelog": "^3.3.4",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/commit-analyzer": "^9.0.2",
-    "@semantic-release/github": "^8.0.4",
+    "@semantic-release/github": "^8.0.5",
     "@semantic-release/npm": "^9.0.1",
     "@semantic-release/release-notes-generator": "^10.0.3",
-    "@sentry/types": "^7.1.1",
-    "@types/node": "^18.0.0",
+    "@sentry/node": "^7.10.0",
+    "@sentry/types": "^7.10.0",
+    "@types/node": "^18.7.2",
     "@types/prompts": "^2.0.14",
-    "@typescript-eslint/eslint-plugin": "^5.27.1",
-    "@typescript-eslint/parser": "^5.27.1",
-    "ava": "^4.3.0",
-    "cspell": "^6.1.2",
-    "esbuild": "^0.14.43",
+    "@typescript-eslint/eslint-plugin": "^5.33.0",
+    "@typescript-eslint/parser": "^5.33.0",
+    "ava": "^4.3.1",
+    "cspell": "^6.6.1",
+    "esbuild": "^0.15.1",
     "esbuild-runner": "^2.2.1",
-    "eslint": "^8.17.0",
+    "eslint": "^8.21.0",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-import-resolver-typescript": "^2.7.1",
+    "eslint-import-resolver-typescript": "^3.4.0",
     "eslint-plugin-eslint-comments": "^3.2.0",
     "eslint-plugin-import": "^2.26.0",
     "nyc": "^15.1.0",
-    "prettier": "^2.7.0",
+    "pino": "^8.4.1",
+    "prettier": "^2.7.1",
     "prompts": "^2.4.2",
     "semantic-release": "^19.0.3",
     "slugify": "^1.6.5",
     "source-map-support": "^0.5.21",
-    "typescript": "^4.7.3"
+    "typescript": "^4.7.4",
+    "vitest": "^0.21.1"
   },
   "peerDependencies": {
     "@sentry/node": "^7.0.0",
@@ -81,6 +84,6 @@
     "semver-regex": "3.1.4"
   },
   "dependencies": {
-    "pino-abstract-transport": "^0.5.0"
+    "pino-abstract-transport": "^1.0.0"
   }
 }
