@@ -1,19 +1,20 @@
 import { setTimeout } from "timers/promises";
-import pino from "pino";
+import pino, { transport } from "pino";
 import { test } from "vitest";
 
-const transport = pino.transport({
+const transpor = transport({
   target: "../../build/cjs/index.js",
   options: {
     sentry: {
       dsn: "",
     },
     minLevel: 10,
-    withLogRecord: true,
+    tags: ["time"],
+    context: ["hostname"],
   },
 });
 
-const logger = pino(transport);
+const logger = pino(transpor);
 
 test("log record get to Sentry", async () => {
   logger.error({ err: new Error("test 123"), foo: "bar" });

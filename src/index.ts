@@ -3,25 +3,77 @@ import {
   captureMessage,
   init,
   NodeOptions,
+  SeverityLevel,
 } from "@sentry/node";
 import { Scope } from "@sentry/types/types/scope";
+import get from "lodash.get";
 import build from "pino-abstract-transport";
-import { deserializePinoError, pinoLevelToSentryLevel } from "./utils";
 
-interface PinoSentryOptions {
-  sentry?: NodeOptions;
-  minLevel?: number;
-  withLogRecord?: boolean;
+const pinoLevelToSentryLevel = (level: number): SeverityLevel => {
+  if (level == 60) {
+    return "fatal";
+  }
+  if (level >= 50) {
+    return "error";
+  }
+  if (level >= 40) {
+    return "warning";
+  }
+  if (level >= 30) {
+    return "log";
+  }
+  if (level >= 20) {
+    return "info";
+  }
+  return "debug";
+};
+
+function deserializePinoError(pinoErr) {
+  const { message, stack } = pinoErr;
+  const newError = new Error(message);
+  newError.stack = stack;
+  return newError;
 }
 
-export default async function (pinoSentryOptions: PinoSentryOptions) {
+interface PinoSentryOptions {
+  sentry: NodeOptions;
+  minLevel?: number;
+  withLogRecord?: boolean;
+  tags?: string[];
+  context?: string[];
+}
+
+const defaultOptions: Partial<PinoSentryOptions> = {
+  minLevel: 10,
+  withLogRecord: false,
+};
+
+export default async function (
+  pinoSentryOptions: Partial<PinoSentryOptions> = defaultOptions
+) {
   init(pinoSentryOptions.sentry);
 
   function enrichScope(scope: Scope, pinoEvent) {
     scope.setLevel(pinoLevelToSentryLevel(pinoEvent.level));
+
     if (pinoSentryOptions.withLogRecord) {
-      scope.setContext("pino", pinoEvent);
+      scope.setContext("pino-log-record", pinoEvent);
     }
+
+    if (pinoSentryOptions.tags?.length) {
+      pinoSentryOptions.tags.forEach((tag) =>
+        scope.setTag(tag, get(pinoEvent, tag))
+      );
+    }
+
+    if (pinoSentryOptions.context?.length) {
+      const context = {};
+      pinoSentryOptions.context.forEach(
+        (c) => (context[c] = get(pinoEvent, c))
+      );
+      scope.setContext("pino-context", context);
+    }
+
     return scope;
   }
 

@@ -1,6 +1,6 @@
 {
   "name": "pino-sentry-transport",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Sentry Transport for Pino",
   "keywords": [
     "typescript",
@@ -85,6 +85,7 @@
     "semver-regex": "3.1.4"
   },
   "dependencies": {
+    "lodash.get": "^4.4.2",
     "pino-abstract-transport": "^1.0.0"
   }
 }
