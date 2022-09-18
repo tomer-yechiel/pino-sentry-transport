@@ -49,8 +49,10 @@ const defaultOptions: Partial<PinoSentryOptions> = {
 };
 
 export default async function (
-  pinoSentryOptions: Partial<PinoSentryOptions> = defaultOptions
+  initSentryOptions: Partial<PinoSentryOptions>
 ) {
+  const pinoSentryOptions = { ...initSentryOptions, ...defaultOptions }
+
   init(pinoSentryOptions.sentry);
 
   function enrichScope(scope: Scope, pinoEvent) {
