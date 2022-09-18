@@ -51,7 +51,7 @@ const defaultOptions: Partial<PinoSentryOptions> = {
 export default async function (
   initSentryOptions: Partial<PinoSentryOptions>
 ) {
-  const pinoSentryOptions = { ...initSentryOptions, ...defaultOptions }
+  const pinoSentryOptions = { ...defaultOptions, ...initSentryOptions }
 
   init(pinoSentryOptions.sentry);
 
