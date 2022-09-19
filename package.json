@@ -1,6 +1,6 @@
 {
   "name": "pino-sentry-transport",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Sentry Transport for Pino",
   "keywords": [
     "typescript",
@@ -32,7 +32,7 @@
     "format:check": "prettier \"src/**/*.ts\" --check",
     "lint": "eslint src --ext .ts --fix",
     "lint:check": "eslint src --ext .ts",
-    "test": "ava",
+    "test": "vitest",
     "test:coverage": "nyc ava && nyc report --reporter=html",
     "test:setup": "node -r ./esbuild-hook ./scripts/testSetup",
     "spell:check": "cspell \"{README.md,CODE_OF_CONDUCT.md,CONTRIBUTING.md,.github/*.md,src/**/*.ts}\"",
@@ -49,6 +49,7 @@
     "@semantic-release/release-notes-generator": "^10.0.3",
     "@sentry/node": "^7.10.0",
     "@sentry/types": "^7.10.0",
+    "@types/lodash.get": "^4.4.7",
     "@types/node": "^18.7.2",
     "@types/prompts": "^2.0.14",
     "@typescript-eslint/eslint-plugin": "^5.33.0",
