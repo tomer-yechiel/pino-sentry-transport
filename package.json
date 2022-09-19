@@ -75,7 +75,7 @@
   },
   "peerDependencies": {
     "@sentry/node": "^7.0.0",
-    "pino": "^7.0.0"
+    "pino": "^7.0.0 || ^8.0.0"
   },
   "volta": {
     "node": "16.15.1",
