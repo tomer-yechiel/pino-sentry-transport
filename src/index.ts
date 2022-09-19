@@ -48,10 +48,8 @@ const defaultOptions: Partial<PinoSentryOptions> = {
   withLogRecord: false,
 };
 
-export default async function (
-  initSentryOptions: Partial<PinoSentryOptions>
-) {
-  const pinoSentryOptions = { ...defaultOptions, ...initSentryOptions }
+export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
+  const pinoSentryOptions = { ...defaultOptions, ...initSentryOptions };
 
   init(pinoSentryOptions.sentry);
 
