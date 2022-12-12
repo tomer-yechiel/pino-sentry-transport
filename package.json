@@ -57,7 +57,7 @@
     "ava": "^4.3.1",
     "cspell": "^6.6.1",
     "dprint": "^0.30.3",
-    "esbuild": "^0.15.1",
+    "esbuild": "^0.16.4",
     "esbuild-runner": "^2.2.1",
     "eslint": "^8.21.0",
     "eslint-config-prettier": "^8.5.0",
