@@ -14,7 +14,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-test("should initialize Sentry if options contain Sentry config", async () => {
+test("should initialize Sentry", async () => {
   const sentry = { dsn: "fake dsn" };
   await pinoSentryTransport({
     sentry,

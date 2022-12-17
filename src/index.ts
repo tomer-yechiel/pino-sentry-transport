@@ -37,10 +37,10 @@ function deserializePinoError(pinoErr) {
 
 interface PinoSentryOptions {
   sentry: NodeOptions;
-  minLevel?: number;
-  withLogRecord?: boolean;
-  tags?: string[];
-  context?: string[];
+  minLevel: number;
+  withLogRecord: boolean;
+  tags: string[];
+  context: string[];
 }
 
 const defaultOptions: Partial<PinoSentryOptions> = {
@@ -48,7 +48,7 @@ const defaultOptions: Partial<PinoSentryOptions> = {
   withLogRecord: false,
 };
 
-export default async function (initSentryOptions: PinoSentryOptions) {
+export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
   const pinoSentryOptions = { ...defaultOptions, ...initSentryOptions };
 
   init(pinoSentryOptions.sentry);
