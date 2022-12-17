@@ -1,5 +1,5 @@
-import { captureException, captureMessage, init } from "@sentry/node";
 import { Transform } from "stream";
+import { captureException, captureMessage, init } from "@sentry/node";
 import { afterEach, expect, test, vi } from "vitest";
 import pinoSentryTransport from "../index";
 
