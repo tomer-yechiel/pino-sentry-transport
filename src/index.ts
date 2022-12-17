@@ -5,7 +5,7 @@ import {
   NodeOptions,
   SeverityLevel,
 } from "@sentry/node";
-import { Scope } from "@sentry/types/types/scope";
+import { Scope } from "@sentry/types";
 import get from "lodash.get";
 import build from "pino-abstract-transport";
 
@@ -48,7 +48,7 @@ const defaultOptions: Partial<PinoSentryOptions> = {
   withLogRecord: false,
 };
 
-export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
+export default async function (initSentryOptions: PinoSentryOptions) {
   const pinoSentryOptions = { ...defaultOptions, ...initSentryOptions };
 
   init(pinoSentryOptions.sentry);
@@ -86,7 +86,7 @@ export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
       const serializedError = obj?.err;
       const level = obj.level;
 
-      if (level > pinoSentryOptions.minLevel) {
+      if (level >= pinoSentryOptions.minLevel) {
         if (serializedError) {
           captureException(deserializePinoError(serializedError), (scope) =>
             enrichScope(scope, obj)
