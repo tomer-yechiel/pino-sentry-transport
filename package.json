@@ -1,10 +1,14 @@
 {
   "name": "pino-sentry-transport",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "./build/cjs/index.js",
   "module": "./build/esm/index.js",
   "types": "./build/index.d.ts",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tomer-yechiel/pino-sentry-transport"
+  },
   "engines": {
     "node": "> 14"
   },
