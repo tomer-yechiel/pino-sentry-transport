@@ -1,6 +1,7 @@
 {
   "name": "pino-sentry-transport",
   "version": "1.0.2",
+  "description": "Integrates Pino and Sentry for logging and error tracking.",
   "main": "./build/cjs/index.js",
   "module": "./build/esm/index.js",
   "types": "./build/index.d.ts",
