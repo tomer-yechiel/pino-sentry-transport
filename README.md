@@ -31,6 +31,7 @@ const logger = pino({
       tags: ['id'], // sentry tags to add to the event, uses lodash.get to get the value from the log record
       context: ['hostname'] // sentry context to add to the event, uses lodash.get to get the value from the log record,
       minLevel: 40, // which level to send to sentry
+      skipSentryInit: false // default false - assuming the init is called by the caller
     }
   },
 });

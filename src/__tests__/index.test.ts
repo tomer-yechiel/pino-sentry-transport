@@ -126,3 +126,15 @@ test("should send Errors to Sentry", async () => {
     });
   });
 });
+
+
+test("test skip Sentry init", async () => {
+  const sentry = { dsn: "fake dsn" };
+
+  await pinoSentryTransport({
+    sentry,
+    skipSentryInit: true
+  });
+
+  expect(init).not.toHaveBeenCalled();
+})

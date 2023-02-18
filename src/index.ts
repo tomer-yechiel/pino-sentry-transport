@@ -41,17 +41,21 @@ interface PinoSentryOptions {
   withLogRecord: boolean;
   tags: string[];
   context: string[];
+  skipSentryInit: boolean;
 }
 
 const defaultOptions: Partial<PinoSentryOptions> = {
   minLevel: 10,
   withLogRecord: false,
+  skipSentryInit: false
 };
 
 export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
   const pinoSentryOptions = { ...defaultOptions, ...initSentryOptions };
 
-  init(pinoSentryOptions.sentry);
+  if (!pinoSentryOptions.skipSentryInit) {
+    init(pinoSentryOptions.sentry);
+  }
 
   function enrichScope(scope: Scope, pinoEvent) {
     scope.setLevel(pinoLevelToSentryLevel(pinoEvent.level));
