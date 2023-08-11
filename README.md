@@ -20,19 +20,20 @@ npm i @sentry/node pino-sentry-transport
 import pino from "pino";
 
 const logger = pino({
-  transport: {
-    target: "pino-sentry-transport",
-    options: {
-      sentry: {
-        dsn: "https://<key>:<secret>@sentry.io/<project>",
-        // additional options for sentry
-      },
-      withLogRecord: true, // default false - send the log record to sentry as a context.(if its more then 8Kb Sentry will throw an error)
-      tags: ['id'], // sentry tags to add to the event, uses lodash.get to get the value from the log record
-      context: ['hostname'] // sentry context to add to the event, uses lodash.get to get the value from the log record,
-      minLevel: 40, // which level to send to sentry
-    }
-  },
+    transport: {
+        target: "pino-sentry-transport",
+        options: {
+            sentry: {
+                dsn: "https://<key>:<secret>@sentry.io/<project>",
+                // additional options for sentry
+            },
+            withLogRecord: true, // default false - send the log record to sentry as a context.(if its more then 8Kb Sentry will throw an error)
+            tags: ['id'], // sentry tags to add to the event, uses lodash.get to get the value from the log record
+            context: ['hostname'], // sentry context to add to the event, uses lodash.get to get the value from the log record,
+            minLevel: 40, // which level to send to sentry
+            skipSentryInitialization: true, // default false - if you want to initialize sentry by yourself
+        }
+    },
 });
 ```
 
