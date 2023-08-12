@@ -25,12 +25,12 @@ test("should initialize Sentry", async () => {
 });
 
 test("should not initialized Sentry if flag is true", async () => {
-    await pinoSentryTransport({
-        sentry: { dsn: "fake dsn" },
-        skipSentryInitialization: true,
-    });
+  await pinoSentryTransport({
+    sentry: { dsn: "fake dsn" },
+    skipSentryInitialization: true,
+  });
 
-    expect(init).not.toHaveBeenCalled();
+  expect(init).not.toHaveBeenCalled();
 });
 
 test("should send logs to Sentry if message level is above the threshold", async () => {

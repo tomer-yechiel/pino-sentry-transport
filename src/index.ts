@@ -53,7 +53,7 @@ const defaultOptions: Partial<PinoSentryOptions> = {
 export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
   const pinoSentryOptions = { ...defaultOptions, ...initSentryOptions };
 
-  if(!pinoSentryOptions.skipSentryInitialization){
+  if (!pinoSentryOptions.skipSentryInitialization) {
     init(pinoSentryOptions.sentry);
   }
 
@@ -66,14 +66,14 @@ export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
 
     if (pinoSentryOptions.tags?.length) {
       pinoSentryOptions.tags.forEach((tag) =>
-        scope.setTag(tag, get(pinoEvent, tag))
+        scope.setTag(tag, get(pinoEvent, tag)),
       );
     }
 
     if (pinoSentryOptions.context?.length) {
       const context = {};
       pinoSentryOptions.context.forEach(
-        (c) => (context[c] = get(pinoEvent, c))
+        (c) => (context[c] = get(pinoEvent, c)),
       );
       scope.setContext("pino-context", context);
     }
@@ -93,7 +93,7 @@ export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
       if (level >= pinoSentryOptions.minLevel) {
         if (serializedError) {
           captureException(deserializePinoError(serializedError), (scope) =>
-            enrichScope(scope, obj)
+            enrichScope(scope, obj),
           );
         } else {
           captureMessage(obj?.msg, (scope) => enrichScope(scope, obj));
