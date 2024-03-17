@@ -4,6 +4,7 @@ import {
   init,
   NodeOptions,
   SeverityLevel,
+  getCurrentHub
 } from "@sentry/node";
 import { Scope } from "@sentry/types";
 import get from "lodash.get";
@@ -41,6 +42,9 @@ interface PinoSentryOptions {
   withLogRecord: boolean;
   tags: string[];
   context: string[];
+  /**
+   *  @deprecated This property is deprecated and should not be used. It is currently ignored and will be removed in the next major version. see docs.
+   */
   skipSentryInitialization: boolean;
 }
 
@@ -53,7 +57,9 @@ const defaultOptions: Partial<PinoSentryOptions> = {
 export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
   const pinoSentryOptions = { ...defaultOptions, ...initSentryOptions };
 
-  if (!pinoSentryOptions.skipSentryInitialization) {
+  const isInitialized = !!getCurrentHub().getClient();
+
+  if (!isInitialized) {
     init(pinoSentryOptions.sentry);
   }
 
