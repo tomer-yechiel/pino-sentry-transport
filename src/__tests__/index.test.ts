@@ -24,15 +24,6 @@ test("should initialize Sentry", async () => {
   expect(init).toHaveBeenCalledWith(sentry);
 });
 
-test("should not initialized Sentry if flag is true", async () => {
-  await pinoSentryTransport({
-    sentry: { dsn: "fake dsn" },
-    skipSentryInitialization: true,
-  });
-
-  expect(init).not.toHaveBeenCalled();
-});
-
 test("should send logs to Sentry if message level is above the threshold", async () => {
   const transform = (await pinoSentryTransport({
     sentry: { dsn: "fake dsn" },

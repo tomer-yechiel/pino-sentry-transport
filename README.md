@@ -31,10 +31,18 @@ const logger = pino({
             tags: ['id'], // sentry tags to add to the event, uses lodash.get to get the value from the log record
             context: ['hostname'], // sentry context to add to the event, uses lodash.get to get the value from the log record,
             minLevel: 40, // which level to send to sentry
-            skipSentryInitialization: true, // default false - if you want to initialize sentry by yourself
         }
     },
 });
 ```
 
 if log contain error, it will send to sentry using captureException if not it will use captureMessage.
+
+### Sentry initialization
+Because Pino transport runs in a separate worker thread, Sentry needs to be [initialized again](https://docs.sentry.io/platforms/javascript/configuration/webworkers/#usage-with-worker-level-initialization) in the worker.
+usually it means Sentry need to be initialized twice   
+
+1. in the application code
+2. in pino-sentry-transport
+
+skipSentryInitialization is removed from the documentation
