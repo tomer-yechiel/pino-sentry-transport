@@ -4,7 +4,7 @@ import {
   init,
   NodeOptions,
   SeverityLevel,
-  getCurrentHub
+  getCurrentHub,
 } from "@sentry/node";
 import { Scope } from "@sentry/types";
 import get from "lodash.get";
@@ -57,7 +57,8 @@ const defaultOptions: Partial<PinoSentryOptions> = {
 export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
   const pinoSentryOptions = { ...defaultOptions, ...initSentryOptions };
 
-  const isInitialized = !!getCurrentHub().getClient();
+  const client = getCurrentHub().getClient();
+  const isInitialized = !!client;
 
   if (!isInitialized) {
     init(pinoSentryOptions.sentry);

@@ -1,5 +1,10 @@
 import { Transform } from "stream";
-import { captureException, captureMessage, init } from "@sentry/node";
+import {
+  captureException,
+  captureMessage,
+  init,
+  getCurrentHub,
+} from "@sentry/node";
 import { afterEach, expect, test, vi } from "vitest";
 import pinoSentryTransport from "../index";
 
@@ -7,7 +12,8 @@ vi.mock("@sentry/node", () => {
   const captureException = vi.fn();
   const captureMessage = vi.fn();
   const init = vi.fn();
-  return { captureException, captureMessage, init };
+  const getCurrentHub = vi.fn(() => ({ getClient: vi.fn(() => undefined) }));
+  return { captureException, captureMessage, init, getCurrentHub };
 });
 
 afterEach(() => {
@@ -20,9 +26,20 @@ test("should initialize Sentry", async () => {
     sentry,
   });
 
+  expect(getCurrentHub).toHaveBeenCalled();
   expect(init).toHaveBeenCalledOnce();
   expect(init).toHaveBeenCalledWith(sentry);
 });
+
+// test("should skip Sentry initialization if already initialized", async () => {
+//   vi.spyOn(getCurrentHub(), "getClient").mockReturnValue({} as Client<ClientOptions<BaseTransportOptions>>);
+//   const sentry = { dsn: "fake dsn" };
+//   await pinoSentryTransport({
+//     sentry,
+//   });
+//   expect(getCurrentHub).toHaveBeenCalled();
+//   expect(init).not.toHaveBeenCalled();
+// })
 
 test("should send logs to Sentry if message level is above the threshold", async () => {
   const transform = (await pinoSentryTransport({
