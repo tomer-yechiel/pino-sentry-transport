@@ -46,12 +46,15 @@ interface PinoSentryOptions {
    *  @deprecated This property is deprecated and should not be used. It is currently ignored and will be removed in the next major version. see docs.
    */
   skipSentryInitialization: boolean;
+
+  expectPinoConfig: boolean;
 }
 
 const defaultOptions: Partial<PinoSentryOptions> = {
   minLevel: 10,
   withLogRecord: false,
   skipSentryInitialization: false,
+  expectPinoConfig: false,
 };
 
 export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
@@ -88,24 +91,29 @@ export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
     return scope;
   }
 
-  return build(async function (source) {
-    for await (const obj of source) {
-      if (!obj) {
-        return;
-      }
+  return build(
+    async function (source) {
+      for await (const obj of source) {
+        if (!obj) {
+          return;
+        }
 
-      const serializedError = obj?.err;
-      const level = obj.level;
+        // @ts-ignore
+        const serializedError = obj?.[source.errorKey ?? 'err'];
+        const level = obj.level;
 
-      if (level >= pinoSentryOptions.minLevel) {
-        if (serializedError) {
-          captureException(deserializePinoError(serializedError), (scope) =>
-            enrichScope(scope, obj),
-          );
-        } else {
-          captureMessage(obj?.msg, (scope) => enrichScope(scope, obj));
+        if (level >= pinoSentryOptions.minLevel) {
+          if (serializedError) {
+            captureException(deserializePinoError(serializedError), (scope) =>
+              enrichScope(scope, obj),
+            );
+          } else {
+            // @ts-ignore
+            captureMessage(obj?.[source.messageKey ?? 'msg'], (scope) => enrichScope(scope, obj));
+          }
         }
       }
-    }
-  });
+    },
+    { expectPinoConfig: pinoSentryOptions.expectPinoConfig },
+  );
 }
