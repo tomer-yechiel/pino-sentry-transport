@@ -1,6 +1,6 @@
 {
   "name": "pino-sentry-transport",
-  "version": "1.2.1-alpha.0",
+  "version": "1.2.1-alpha.1",
   "description": "Integrates Pino and Sentry.",
   "main": "./build/cjs/index.js",
   "module": "./build/esm/index.js",
