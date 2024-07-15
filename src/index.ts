@@ -1,3 +1,4 @@
+import { Transform } from "stream";
 import {
   captureException,
   captureMessage,
@@ -92,14 +93,16 @@ export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
   }
 
   return build(
-    async function (source) {
+    async function (
+      source: Transform &
+        build.OnUnknown & { errorKey?: string; messageKey?: string },
+    ) {
       for await (const obj of source) {
         if (!obj) {
           return;
         }
 
-        // @ts-ignore
-        const serializedError = obj?.[source.errorKey ?? 'err'];
+        const serializedError = obj?.[source.errorKey ?? "err"];
         const level = obj.level;
 
         if (level >= pinoSentryOptions.minLevel) {
@@ -108,8 +111,9 @@ export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
               enrichScope(scope, obj),
             );
           } else {
-            // @ts-ignore
-            captureMessage(obj?.[source.messageKey ?? 'msg'], (scope) => enrichScope(scope, obj));
+            captureMessage(obj?.[source.messageKey ?? "msg"], (scope) =>
+              enrichScope(scope, obj),
+            );
           }
         }
       }
