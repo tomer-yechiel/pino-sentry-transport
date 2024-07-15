@@ -31,6 +31,7 @@ const logger = pino({
             tags: ['id'], // sentry tags to add to the event, uses lodash.get to get the value from the log record
             context: ['hostname'], // sentry context to add to the event, uses lodash.get to get the value from the log record,
             minLevel: 40, // which level to send to sentry
+            expectPinoConfig: true, // default false - pass true if pino configured with custom messageKey or errorKey see below
         }
     },
 });
@@ -45,4 +46,5 @@ usually it means Sentry need to be initialized twice
 1. in the application code
 2. in pino-sentry-transport
 
-skipSentryInitialization is removed from the documentation
+
+expectPinoConfig is passed to pino-abstract-transport to allow Pino to pass the messageKey and errorKey to the transport [pino-abstract-transport](https://github.com/pinojs/pino-abstract-transport?tab=readme-ov-file#using-pino-config)
