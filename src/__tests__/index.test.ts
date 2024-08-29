@@ -1,9 +1,9 @@
-import { Transform } from "stream";
+import type { Transform } from "node:stream";
 import {
   captureException,
   captureMessage,
-  init,
   getCurrentHub,
+  init,
 } from "@sentry/node";
 import { afterEach, expect, test, vi } from "vitest";
 import pinoSentryTransport from "../index";

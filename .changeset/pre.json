@@ -1,0 +1,10 @@
+{
+  "mode": "pre",
+  "tag": "alpha",
+  "initialVersions": {
+    "pino-sentry-transport": "1.3.0"
+  },
+  "changesets": [
+    "violet-mugs-think"
+  ]
+}
