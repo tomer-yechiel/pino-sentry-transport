@@ -8,8 +8,6 @@
 
 [//]: # ([![GitHub Workflow Status]&#40;https://github.com/tomer-yechiel/pino-sentry-transport/actions/workflows/pino-sentry-transport.yml/badge.svg?branch=main&#41;]&#40;https://github.com/tomer-yechiel/pino-sentry-transport/actions&#41;)
 
-Use this transport to send logs from [Pino](https://github.com/pinojs/pino) to [Sentry](https://sentry.io/).
-Useful for manually sending logs to Sentry.
 
 
 **Pino Sentry Transport** allows you to send logs from [Pino](https://github.com/pinojs/pino) directly to [Sentry](https://sentry.io/).
