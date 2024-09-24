@@ -1,18 +1,18 @@
-import { Transform } from "stream";
+import type { Transform } from "node:stream";
 import {
+  type NodeOptions,
+  type SeverityLevel,
   captureException,
   captureMessage,
-  init,
-  NodeOptions,
-  SeverityLevel,
   getCurrentHub,
+  init,
 } from "@sentry/node";
-import { Scope } from "@sentry/types";
+import type { Scope } from "@sentry/types";
 import get from "lodash.get";
 import build from "pino-abstract-transport";
 
 const pinoLevelToSentryLevel = (level: number): SeverityLevel => {
-  if (level == 60) {
+  if (level === 60) {
     return "fatal";
   }
   if (level >= 50) {
@@ -76,16 +76,16 @@ export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
     }
 
     if (pinoSentryOptions.tags?.length) {
-      pinoSentryOptions.tags.forEach((tag) =>
-        scope.setTag(tag, get(pinoEvent, tag)),
-      );
+      for (const tag of pinoSentryOptions.tags) {
+        scope.setTag(tag, get(pinoEvent, tag));
+      }
     }
 
     if (pinoSentryOptions.context?.length) {
       const context = {};
-      pinoSentryOptions.context.forEach(
-        (c) => (context[c] = get(pinoEvent, c)),
-      );
+      for (const c of pinoSentryOptions.context) {
+        context[c] = get(pinoEvent, c);
+      }
       scope.setContext("pino-context", context);
     }
 
@@ -93,10 +93,10 @@ export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
   }
 
   return build(
-    async function (
+    async (
       source: Transform &
         build.OnUnknown & { errorKey?: string; messageKey?: string },
-    ) {
+    ) => {
       for await (const obj of source) {
         if (!obj) {
           return;
