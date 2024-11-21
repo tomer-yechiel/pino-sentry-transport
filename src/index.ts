@@ -1,4 +1,3 @@
-import type { Transform } from "node:stream";
 import {
   type NodeOptions,
   type SeverityLevel,
@@ -9,6 +8,7 @@ import {
 } from "@sentry/node";
 import type { Scope } from "@sentry/types";
 import get from "lodash.get";
+import type { Transform } from "node:stream";
 import build from "pino-abstract-transport";
 
 const pinoLevelToSentryLevel = (level: number): SeverityLevel => {
@@ -58,6 +58,11 @@ const defaultOptions: Partial<PinoSentryOptions> = {
   expectPinoConfig: false,
 };
 
+const defaultSentryOptions: NodeOptions = {
+  dsn: process.env.SENTRY_DSN,
+  environment: process.env.NODE_ENV,
+};
+
 export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
   const pinoSentryOptions = { ...defaultOptions, ...initSentryOptions };
 
@@ -65,7 +70,7 @@ export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
   const isInitialized = !!client;
 
   if (!isInitialized) {
-    init(pinoSentryOptions.sentry);
+    init({ ...defaultSentryOptions, ...pinoSentryOptions.sentry });
   }
 
   function enrichScope(scope: Scope, pinoEvent) {
