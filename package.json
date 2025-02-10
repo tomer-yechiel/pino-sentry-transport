@@ -43,8 +43,8 @@
     "@arethetypeswrong/cli": "^0.15.4",
     "@biomejs/biome": "1.8.3",
     "@changesets/cli": "^2.27.7",
-    "@sentry/node": "^8.7.0",
-    "@sentry/types": "^8.7.0",
+    "@sentry/node": "^9.0.0",
+    "@sentry/types": "^9.0.0",
     "@types/lodash.get": "^4.4.9",
     "@types/node": "^20.12.13",
     "@types/prompts": "^2.4.9",
@@ -60,7 +60,7 @@
     "vitest": "^1.6.0"
   },
   "peerDependencies": {
-    "@sentry/node": "^7.0.0 || ^8.0.0",
+    "@sentry/node": "^7.0.0 || ^8.0.0 || ^9.0.0",
     "pino": "^7.0.0 || ^8.0.0 || ^9.0.0"
   },
   "volta": {
