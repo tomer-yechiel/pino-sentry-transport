@@ -2,7 +2,7 @@ import type { Transform } from "node:stream";
 import {
   captureException,
   captureMessage,
-  getCurrentHub,
+  getClient,
   init,
 } from "@sentry/node";
 import { afterEach, expect, test, vi } from "vitest";
@@ -12,8 +12,8 @@ vi.mock("@sentry/node", () => {
   const captureException = vi.fn();
   const captureMessage = vi.fn();
   const init = vi.fn();
-  const getCurrentHub = vi.fn(() => ({ getClient: vi.fn(() => undefined) }));
-  return { captureException, captureMessage, init, getCurrentHub };
+  const getClient = vi.fn(() => undefined);
+  return { captureException, captureMessage, init, getClient };
 });
 
 afterEach(() => {
@@ -26,7 +26,7 @@ test("should initialize Sentry", async () => {
     sentry,
   });
 
-  expect(getCurrentHub).toHaveBeenCalled();
+  expect(getClient).toHaveBeenCalled();
   expect(init).toHaveBeenCalledOnce();
   expect(init).toHaveBeenCalledWith(sentry);
 });

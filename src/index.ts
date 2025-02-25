@@ -4,7 +4,7 @@ import {
   type SeverityLevel,
   captureException,
   captureMessage,
-  getCurrentHub,
+  getClient,
   init,
 } from "@sentry/node";
 import type { Scope } from "@sentry/types";
@@ -61,7 +61,7 @@ const defaultOptions: Partial<PinoSentryOptions> = {
 export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
   const pinoSentryOptions = { ...defaultOptions, ...initSentryOptions };
 
-  const client = getCurrentHub().getClient();
+  const client = getClient();
   const isInitialized = !!client;
 
   if (!isInitialized) {
