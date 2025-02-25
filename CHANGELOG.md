@@ -1,5 +1,11 @@
 # pino-sentry-transport
 
+## 1.5.0
+
+### Minor Changes
+
+- e131d0f: add support for Sentry v9
+
 ## 1.4.0
 
 ### Minor Changes

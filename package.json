@@ -1,6 +1,6 @@
 {
   "name": "pino-sentry-transport",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Integrates Pino and Sentry.",
   "author": "Tomer Yechiel",
   "main": "dist/index.js",
