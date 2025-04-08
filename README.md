@@ -35,6 +35,7 @@ const logger = pino({
             withLogRecord: true, // default false - send the entire log record to sentry as a context.(FYI if its more then 8Kb Sentry will throw an error)
             tags: ['level'], // sentry tags to add to the event, uses lodash.get to get the value from the log record
             context: ['hostname'], // sentry context to add to the event, uses lodash.get to get the value from the log record,
+            directContext: ['user', 'extra'], // Keys in the log object whose values (if objects) will be directly added to Sentry context
             minLevel: 40, // which level to send to sentry
             expectPinoConfig: true, // default false - pass true if pino configured with custom messageKey or errorKey see below
         }
@@ -47,8 +48,9 @@ const logger = pino({
 
 - **`withLogRecord`**: When set to `true`, sends the entire log record as context to Sentry. Be cautious of log records larger than 8KB, as Sentry will throw an error.
 - **`tags`**: An array specifying which fields from the log record should be added as tags in Sentry. Uses `lodash.get` to extract values.
-- **`context`**: An array specifying which fields from the log record should be added as context in Sentry. Also uses `lodash.get` for value extraction.
-- **`minLevel`**: The minimum log level required for a message to be sent to Sentry. Log levels follow Pino's conventions (e.g., 40 for 'error').
+- **`context`**: An array specifying which fields from the log record should be added as context in Sentry under the `pino-context` key. Also uses `lodash.get` for value extraction.
+- **`directContext`**: An array of keys in the log record to be added directly to the Sentry context (not under the `pino-context` key). In the log object, the value of these keys must be objects or null. Can be used to pass in user, tags, extra, etc.
+- **`minLevel`**: The minimum log level required for a message to be sent to Sentry. Log levels follow Pino's conventions (e.g., 40 for 'warning', 50 for 'error').
 - **`expectPinoConfig`**: If set to `true`, allows the transport to work with custom `messageKey` or `errorKey` settings in Pino.
 
 

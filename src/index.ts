@@ -44,6 +44,17 @@ interface PinoSentryOptions {
   tags: string[];
   context: string[];
   /**
+   * Specifies keys in the Pino log object whose values should be directly added as Sentry context.
+   * For each key in this array:
+   *  - If the key exists in the log record and its value is an object,
+   *  - The key will be used as the Sentry context key.
+   *  - The value will be used as the Sentry context value.
+   *
+   * This can be used to pass in user, tags, extra, etc., directly if they are already structured correctly in the log record.
+   * See https://docs.sentry.io/platforms/node/enriching-events/context for more information.
+   */
+  directContext?: string[];
+  /**
    *  @deprecated This property is deprecated and should not be used. It is currently ignored and will be removed in the next major version. see docs.
    */
   skipSentryInitialization: boolean;
@@ -56,6 +67,7 @@ const defaultOptions: Partial<PinoSentryOptions> = {
   withLogRecord: false,
   skipSentryInitialization: false,
   expectPinoConfig: false,
+  directContext: [],
 };
 
 export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
@@ -73,6 +85,15 @@ export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
 
     if (pinoSentryOptions.withLogRecord) {
       scope.setContext("pino-log-record", pinoEvent);
+    }
+
+    if (pinoSentryOptions.directContext?.length) {
+      for (const key of pinoSentryOptions.directContext) {
+        const value = pinoEvent[key];
+        if (value !== undefined && typeof value === "object") {
+          scope.setContext(key, value as Record<string, unknown> | null);
+        }
+      }
     }
 
     if (pinoSentryOptions.tags?.length) {
