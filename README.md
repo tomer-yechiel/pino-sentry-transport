@@ -35,6 +35,7 @@ const logger = pino({
             withLogRecord: true, // default false - send the entire log record to sentry as a context.(FYI if its more then 8Kb Sentry will throw an error)
             tags: ['level'], // sentry tags to add to the event, uses lodash.get to get the value from the log record
             context: ['hostname'], // sentry context to add to the event, uses lodash.get to get the value from the log record,
+            contextObjectKey: 'sentryContext', // Key in the log object that contains Sentry context to be added directly to the event
             minLevel: 40, // which level to send to sentry
             expectPinoConfig: true, // default false - pass true if pino configured with custom messageKey or errorKey see below
         }
@@ -48,6 +49,7 @@ const logger = pino({
 - **`withLogRecord`**: When set to `true`, sends the entire log record as context to Sentry. Be cautious of log records larger than 8KB, as Sentry will throw an error.
 - **`tags`**: An array specifying which fields from the log record should be added as tags in Sentry. Uses `lodash.get` to extract values.
 - **`context`**: An array specifying which fields from the log record should be added as context in Sentry. Also uses `lodash.get` for value extraction.
+- **`contextObjectKey`**: Key in the log object that contains Sentry context to be added directly to the event. If we see a log record with this key, we'll add every key/value pair in the object to the Sentry event as context. For example, if contextObjectKey is set to "sentryContext", and you do `logger.error({msg: "Something bad happened", sentryContext: { someKey: "someValue", user: { id: 123, email: "test@test.com" } }})`, then `user` and `someKey` will be added to the Sentry event as context.
 - **`minLevel`**: The minimum log level required for a message to be sent to Sentry. Log levels follow Pino's conventions (e.g., 40 for 'error').
 - **`expectPinoConfig`**: If set to `true`, allows the transport to work with custom `messageKey` or `errorKey` settings in Pino.
 

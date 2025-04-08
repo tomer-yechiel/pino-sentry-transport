@@ -7,7 +7,7 @@ import {
   getClient,
   init,
 } from "@sentry/node";
-import type { Scope } from "@sentry/types";
+import type { Extras, Primitive, Scope } from "@sentry/types";
 import get from "lodash.get";
 import build from "pino-abstract-transport";
 
@@ -43,6 +43,16 @@ interface PinoSentryOptions {
   withLogRecord: boolean;
   tags: string[];
   context: string[];
+  /**
+   * Sentry context to add directly to the event.
+   * If we see a log record with this key, we'll add every key/value pair in the object to the Sentry event as context.
+   * Special keys like 'user', 'extras', 'tags' will be handled appropriately: https://docs.sentry.io/platforms/javascript/enriching-events/context/#passing-context-directly
+   * If the value on the log record is not an object, this option will have no effect.
+   *
+   * For example, if contextObjectKey is set to "sentryContext", and you do `logger.error({msg: "Something bad happened", sentryContext: { someKey: "someValue", user: { id: 123, email: "test@test.com" } }})`
+   * then `user` and `someKey` will be added to the Sentry event as context.
+   */
+  contextObjectKey?: string;
   /**
    *  @deprecated This property is deprecated and should not be used. It is currently ignored and will be removed in the next major version. see docs.
    */
@@ -87,6 +97,24 @@ export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
         context[c] = get(pinoEvent, c);
       }
       scope.setContext("pino-context", context);
+    }
+
+    if (pinoSentryOptions.contextObjectKey) {
+      const sentryContext = pinoEvent[pinoSentryOptions.contextObjectKey];
+
+      if (typeof sentryContext === "object") {
+        for (const [key, value] of Object.entries(sentryContext)) {
+          if (key === "user") {
+            scope.setUser(value);
+          } else if (key === "tags") {
+            scope.setTags(value as Record<string, Primitive>);
+          } else if (key === "extras") {
+            scope.setExtras(value as Extras);
+          } else {
+            scope.setContext(key, value as Record<string, unknown> | null);
+          }
+        }
+      }
     }
 
     return scope;
