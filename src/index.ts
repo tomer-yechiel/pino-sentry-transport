@@ -4,6 +4,7 @@ import {
   type SeverityLevel,
   captureException,
   captureMessage,
+  addBreadcrumb,
   getClient,
   init,
 } from "@sentry/node";
@@ -49,6 +50,7 @@ interface PinoSentryOptions {
   skipSentryInitialization: boolean;
 
   expectPinoConfig: boolean;
+  sendBreadcrumbs: boolean;
 }
 
 const defaultOptions: Partial<PinoSentryOptions> = {
@@ -107,13 +109,31 @@ export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
 
         if (level >= pinoSentryOptions.minLevel) {
           if (serializedError) {
-            captureException(deserializePinoError(serializedError), (scope) =>
-              enrichScope(scope, obj)
-            );
+            if (pinoSentryOptions.sendBreadcrumbs) {
+              addBreadcrumb({
+                type: "error",
+                level: pinoLevelToSentryLevel(level),
+                message: obj?.[source.messageKey ?? "msg"],
+                data: obj,
+              });
+            } else {
+              captureException(deserializePinoError(serializedError), (scope) =>
+                enrichScope(scope, obj)
+              );
+            }
           } else {
-            captureMessage(obj?.[source.messageKey ?? "msg"], (scope) =>
-              enrichScope(scope, obj)
-            );
+            if (pinoSentryOptions.sendBreadcrumbs) {
+              addBreadcrumb({
+                type: "default",
+                level: pinoLevelToSentryLevel(level),
+                message: obj?.[source.messageKey ?? "msg"],
+                data: obj,
+              });
+            } else {
+              captureMessage(obj?.[source.messageKey ?? "msg"], (scope) =>
+                enrichScope(scope, obj)
+              );
+            }
           }
         }
       }
