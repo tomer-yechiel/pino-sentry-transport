@@ -4,10 +4,11 @@ import {
   type SeverityLevel,
   captureException,
   captureMessage,
+  addBreadcrumb,
   getClient,
   init,
 } from "@sentry/node";
-import type { Scope } from "@sentry/types";
+import type { Scope } from "@sentry/core";
 import get from "lodash.get";
 import build from "pino-abstract-transport";
 
@@ -49,6 +50,7 @@ interface PinoSentryOptions {
   skipSentryInitialization: boolean;
 
   expectPinoConfig: boolean;
+  sendBreadcrumbs: boolean;
 }
 
 const defaultOptions: Partial<PinoSentryOptions> = {
@@ -95,7 +97,7 @@ export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
   return build(
     async (
       source: Transform &
-        build.OnUnknown & { errorKey?: string; messageKey?: string },
+        build.OnUnknown & { errorKey?: string; messageKey?: string }
     ) => {
       for await (const obj of source) {
         if (!obj) {
@@ -107,17 +109,35 @@ export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
 
         if (level >= pinoSentryOptions.minLevel) {
           if (serializedError) {
-            captureException(deserializePinoError(serializedError), (scope) =>
-              enrichScope(scope, obj),
-            );
+            if (pinoSentryOptions.sendBreadcrumbs) {
+              addBreadcrumb({
+                type: "error",
+                level: pinoLevelToSentryLevel(level),
+                message: obj?.[source.messageKey ?? "msg"],
+                data: obj,
+              });
+            } else {
+              captureException(deserializePinoError(serializedError), (scope) =>
+                enrichScope(scope, obj)
+              );
+            }
           } else {
-            captureMessage(obj?.[source.messageKey ?? "msg"], (scope) =>
-              enrichScope(scope, obj),
-            );
+            if (pinoSentryOptions.sendBreadcrumbs) {
+              addBreadcrumb({
+                type: "default",
+                level: pinoLevelToSentryLevel(level),
+                message: obj?.[source.messageKey ?? "msg"],
+                data: obj,
+              });
+            } else {
+              captureMessage(obj?.[source.messageKey ?? "msg"], (scope) =>
+                enrichScope(scope, obj)
+              );
+            }
           }
         }
       }
     },
-    { expectPinoConfig: pinoSentryOptions.expectPinoConfig },
+    { expectPinoConfig: pinoSentryOptions.expectPinoConfig }
   );
 }

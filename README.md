@@ -37,6 +37,7 @@ const logger = pino({
             context: ['hostname'], // sentry context to add to the event, uses lodash.get to get the value from the log record,
             minLevel: 40, // which level to send to sentry
             expectPinoConfig: true, // default false - pass true if pino configured with custom messageKey or errorKey see below
+            sendBreadcrumbs: true, // default false - send the log record as a breadcrumb to Sentry
         }
     },
 });
@@ -50,6 +51,7 @@ const logger = pino({
 - **`context`**: An array specifying which fields from the log record should be added as context in Sentry. Also uses `lodash.get` for value extraction.
 - **`minLevel`**: The minimum log level required for a message to be sent to Sentry. Log levels follow Pino's conventions (e.g., 40 for 'error').
 - **`expectPinoConfig`**: If set to `true`, allows the transport to work with custom `messageKey` or `errorKey` settings in Pino.
+- **`sendBreadcrumbs`**: If set to `true`, sends the log record as a breadcrumb to Sentry.
 
 
 ### Sentry initialization
