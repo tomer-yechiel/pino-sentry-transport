@@ -1,5 +1,11 @@
 # pino-sentry-transport
 
+## 1.5.1
+
+### Patch Changes
+
+- 6d3ec08: fix infra
+
 ## 1.5.0
 
 ### Minor Changes
