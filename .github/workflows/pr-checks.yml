@@ -1,9 +1,6 @@
 name: Pino sentry transport
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
@@ -45,15 +42,3 @@ jobs:
       - name: Test
         run: npm run test
 
-
-      - name: Release
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "github-actions@github.com"
-          npx changeset version
-          git push --follow-tags
-          npx changeset publish
