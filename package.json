@@ -37,6 +37,7 @@
     "ci": "npm run build && npm run lint && npm run check && npm run check-exports && npm run test ",
     "prepublishOnly": "npm run ci",
     "changeset": "changeset",
+    "release": "changeset publish",
     "local-release": "changeset version && changeset publish"
   },
   "devDependencies": {
