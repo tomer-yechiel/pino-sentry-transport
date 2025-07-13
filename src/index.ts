@@ -1,11 +1,11 @@
 import type { Transform } from "node:stream";
 import {
-  type NodeOptions,
-  type SeverityLevel,
   captureException,
   captureMessage,
   getClient,
   init,
+  type NodeOptions,
+  type SeverityLevel,
 } from "@sentry/node";
 import type { Scope } from "@sentry/types";
 import get from "lodash.get";

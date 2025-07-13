@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 env:
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -11,6 +14,9 @@ env:
 jobs:
   pino-sentry-transport:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
 
     concurrency:
       group: ${{ github.ref }}
@@ -18,6 +24,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
       - uses: volta-cli/action@v4
       - run: npm ci
 
@@ -27,11 +36,8 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Format check
-        run: npm run format:check
-
-      - name: Lint check
-        run: npm run lint:check
+      - name: Biome check
+        run: npm run check
 
       - name: Spell check
         run: npm run spell:check
@@ -41,7 +47,13 @@ jobs:
 
 
       - name: Release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm run semantic-release
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "github-actions@github.com"
+          npx changeset version
+          git push --follow-tags
+          npx changeset publish
