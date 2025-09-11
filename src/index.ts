@@ -106,7 +106,7 @@ export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
           continue;
         }
 
-        context[c] = get(pinoEvent, value);
+        context[c] = value;
       }
       scope.setContext("pino-context", context);
     }
