@@ -46,7 +46,6 @@
     "@changesets/cli": "^2.29.5",
     "@sentry/node": "^9.38.0",
     "@sentry/types": "^9.38.0",
-    "@types/lodash.get": "^4.4.9",
     "@types/node": "^24.0.13",
     "@types/prompts": "^2.4.9",
     "cspell": "^9.1.5",
@@ -72,7 +71,6 @@
     "semver-regex": "3.1.4"
   },
   "dependencies": {
-    "lodash.get": "^4.4.2",
     "pino-abstract-transport": "^1.2.0"
   }
 }

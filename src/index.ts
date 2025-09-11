@@ -8,7 +8,6 @@ import {
   type SeverityLevel,
 } from "@sentry/node";
 import type { Scope } from "@sentry/types";
-import get from "lodash.get";
 import build from "pino-abstract-transport";
 
 const pinoLevelToSentryLevel = (level: number): SeverityLevel => {
@@ -35,6 +34,28 @@ function deserializePinoError(pinoErr) {
   const newError = new Error(message);
   newError.stack = stack;
   return newError;
+}
+
+function get<T>(obj: T, path: string | string[]): unknown {
+  // If the path is a string, handle both dot and bracket notation
+  const pathParts = Array.isArray(path)
+    ? path
+    : path.replace(/\[(\d+)\]/g, ".$1").split(".");
+
+  return pathParts.reduce((acc: unknown, key: string) => {
+    if (acc === null || acc === undefined) {
+      return undefined;
+    }
+
+    // Check if the current object has the key.
+    // This prevents errors on non-existent properties
+    if (typeof acc === "object" && acc.hasOwnProperty(key)) {
+      return acc[key];
+    }
+
+    // If the key doesn't exist, we return undefined
+    return undefined;
+  }, obj);
 }
 
 interface PinoSentryOptions {
@@ -77,14 +98,30 @@ export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
 
     if (pinoSentryOptions.tags?.length) {
       for (const tag of pinoSentryOptions.tags) {
-        scope.setTag(tag, get(pinoEvent, tag));
+        const value = get(pinoEvent, tag);
+
+        if (
+          typeof value !== "string" &&
+          typeof value !== "number" &&
+          typeof value !== "boolean"
+        ) {
+          continue;
+        }
+
+        scope.setTag(tag, value);
       }
     }
 
     if (pinoSentryOptions.context?.length) {
       const context = {};
       for (const c of pinoSentryOptions.context) {
-        context[c] = get(pinoEvent, c);
+        const value = get(pinoEvent, c);
+
+        if (typeof value !== "string") {
+          continue;
+        }
+
+        context[c] = value;
       }
       scope.setContext("pino-context", context);
     }
