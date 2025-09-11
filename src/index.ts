@@ -36,10 +36,25 @@ function deserializePinoError(pinoErr) {
   return newError;
 }
 
-function get<T>(obj: T, path: string): unknown {
-  return path.split(".").reduce((acc, key) => {
-    if (acc == null) return undefined;
-    return (acc as Record<string, unknown>)[key];
+function get<T>(obj: T, path: string | string[]): unknown {
+  // If the path is a string, handle both dot and bracket notation
+  const pathParts = Array.isArray(path)
+    ? path
+    : path.replace(/\[(\d+)\]/g, ".$1").split(".");
+
+  return pathParts.reduce((acc: unknown, key: string) => {
+    if (acc === null || acc === undefined) {
+      return undefined;
+    }
+
+    // Check if the current object has the key.
+    // This prevents errors on non-existent properties
+    if (typeof acc === "object" && acc.hasOwnProperty(key)) {
+      return acc[key];
+    }
+
+    // If the key doesn't exist, we return undefined
+    return undefined;
   }, obj);
 }
 
