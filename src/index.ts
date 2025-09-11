@@ -8,7 +8,6 @@ import {
   type SeverityLevel,
 } from "@sentry/node";
 import type { Scope } from "@sentry/types";
-import get from "lodash.get";
 import build from "pino-abstract-transport";
 
 const pinoLevelToSentryLevel = (level: number): SeverityLevel => {
@@ -35,6 +34,13 @@ function deserializePinoError(pinoErr) {
   const newError = new Error(message);
   newError.stack = stack;
   return newError;
+}
+
+function get<T>(obj: T, path: string): unknown {
+  return path.split(".").reduce((acc, key) => {
+    if (acc == null) return undefined;
+    return (acc as Record<string, unknown>)[key];
+  }, obj);
 }
 
 interface PinoSentryOptions {
@@ -77,14 +83,30 @@ export default async function (initSentryOptions: Partial<PinoSentryOptions>) {
 
     if (pinoSentryOptions.tags?.length) {
       for (const tag of pinoSentryOptions.tags) {
-        scope.setTag(tag, get(pinoEvent, tag));
+        const value = get(pinoEvent, tag);
+
+        if (
+          typeof value !== "string" &&
+          typeof value !== "number" &&
+          typeof value !== "boolean"
+        ) {
+          continue;
+        }
+
+        scope.setTag(tag, value);
       }
     }
 
     if (pinoSentryOptions.context?.length) {
       const context = {};
       for (const c of pinoSentryOptions.context) {
-        context[c] = get(pinoEvent, c);
+        const value = get(pinoEvent, c);
+
+        if (typeof value !== "string") {
+          continue;
+        }
+
+        context[c] = get(pinoEvent, value);
       }
       scope.setContext("pino-context", context);
     }
