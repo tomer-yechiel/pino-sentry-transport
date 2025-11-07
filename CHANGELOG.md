@@ -1,5 +1,11 @@
 # pino-sentry-transport
 
+## 1.6.0
+
+### Minor Changes
+
+- 98cf618: add sentry version 10 as peer dependency
+
 ## 1.5.1
 
 ### Patch Changes
